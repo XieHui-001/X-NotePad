@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:note/login/loginpage.dart';
 import 'package:note/notepad/writenotepad.dart';
+import 'package:note/utils/Base64Utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -86,21 +87,11 @@ class _HomeWidget extends State<HomePage>{
   }
 
   void _onLoading() async {
-    notePadId = encryption(items.last.id.toString());
+    notePadId = Base64Utils.encryption(items.last.id.toString());
     notePadList();
     _refreshController.loadComplete();
   }
 
-  /// Base64 解密
-  String decrypt(String value) {
-    List<int> bytes = base64.decode(value);
-    return utf8.decode(bytes);
-  }
-
-  /// Base64 加密
-  String encryption(String value){
-   return base64Encode(utf8.encode(value));
-  }
 
   @override
   void initState() {
@@ -192,7 +183,7 @@ class _HomeWidget extends State<HomePage>{
             leading: const Icon(Icons.supervised_user_circle_rounded),
             title: const Text('用户信息',style: TextStyle(fontSize: 14,color: Colors.black),),
             onTap: () {
-                showToast("Now User: ${decrypt(userEmila)}");
+                showToast("Now User: ${Base64Utils.decrypt(userEmila)}");
             },
           ),
           ListTile(

@@ -9,6 +9,8 @@ import '../bean/ServiceResponse.dart';
 import '../event/EventBusCallBack.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/Base64Utils.dart';
+
 class WriteNotePad extends StatefulWidget{
 
   @override
@@ -64,12 +66,9 @@ class _WriteNotePadWidget extends State<WriteNotePad>{
       return;
     }
 
-    addNotePad(encryption(title),encryption(contentValue),encryption(selectedValue));
+    addNotePad(Base64Utils.encryption(title),Base64Utils.encryption(contentValue),Base64Utils.encryption(selectedValue));
   }
 
-  String encryption(String value){
-    return base64Encode(utf8.encode(value));
-  }
 
   String nowTime(){
     DateTime now = DateTime.now();
@@ -80,7 +79,7 @@ class _WriteNotePadWidget extends State<WriteNotePad>{
 
   Future<void> addNotePad(String title,String content,String options) async{
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"title": title, "content": content, "createtime": encryption(nowTime()), "type": options, "uid": uid});
+    var data = json.encode({"title": title, "content": content, "createtime": Base64Utils.encryption(nowTime()), "type": options, "uid": uid});
     var dio = Dio();
     var response = await dio.request('https://www.jtxqbu.top/note/addNote', options: Options(method: 'POST', headers: headers,), data: data,);
     if (response.statusCode == 200) {

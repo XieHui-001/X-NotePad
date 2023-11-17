@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 
 import '../bean/ServiceResponse.dart';
+import '../utils/Base64Utils.dart';
 
 class RegisterPage extends StatefulWidget{
 
@@ -22,10 +23,6 @@ class _RegisterWidget extends State<RegisterPage>{
   late bool _obscureConfText = true;
   late bool _checkBoxValue = false;
 
-  ///Base 64 加密
-  String encryption(String value){
-    return base64Encode(utf8.encode(value));
-  }
 
   bool isEmail(String value) {
     final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
@@ -76,7 +73,7 @@ class _RegisterWidget extends State<RegisterPage>{
 
   Future<void> register(String email,String password) async{
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"email": encryption(email), "password": encryption(password)});
+    var data = json.encode({"email": Base64Utils.encryption(email), "password": Base64Utils.encryption(password)});
     var dio = Dio();
     var response = await dio.request('https://www.jtxqbu.top/user/register', options: Options(method: 'POST', headers: headers,), data: data,);
     if (response.statusCode == 200) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:note/event/Event.dart';
+import 'package:note/utils/Base64Utils.dart';
 import '../bean/ServiceResponse.dart';
 import '../event/EventBusCallBack.dart';
 
@@ -41,14 +42,6 @@ class _UpdateNotePadWidget extends State<UpdateNotePadPage>{
   }
 
 
-  String decrypt(String value) {
-    List<int> bytes = base64.decode(value);
-    return utf8.decode(bytes);
-  }
-
-  String encryption(String value){
-    return base64Encode(utf8.encode(value));
-  }
 
   void verityUpdateData (){
     late String title = _titleController.text;
@@ -63,7 +56,7 @@ class _UpdateNotePadWidget extends State<UpdateNotePadPage>{
       return;
     }
 
-    updateNotePad(encryption(title),encryption(contentValue),encryption(selectedValue));
+    updateNotePad(Base64Utils.encryption(title),Base64Utils.encryption(contentValue),Base64Utils.encryption(selectedValue));
   }
 
   final MethodChannel _channel = const MethodChannel('Flutter_X-NotePad_CHANNEL_V1.0.0');
@@ -85,7 +78,7 @@ class _UpdateNotePadWidget extends State<UpdateNotePadPage>{
 
   Future<void> updateNotePad(String title,String content,String options) async{
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"id": encryption(noteId), "title": title, "content": content, "type": options,"createtime":encryption(nowTime())});
+    var data = json.encode({"id": Base64Utils.encryption(noteId), "title": title, "content": content, "type": options,"createtime":Base64Utils.encryption(nowTime())});
     var dio = Dio();
     var response = await dio.request('https://www.jtxqbu.top/note/updateNote', options: Options(method: 'POST', headers: headers,), data: data,);
     if (response.statusCode == 200) {
@@ -104,7 +97,7 @@ class _UpdateNotePadWidget extends State<UpdateNotePadPage>{
 
   Future<void> deleteNotePad() async{
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"noteId": encryption(noteId)});
+    var data = json.encode({"noteId": Base64Utils.encryption(noteId)});
     var dio = Dio();
     var response = await dio.request('https://www.jtxqbu.top/note/deleteNote', options: Options(method: 'POST', headers: headers,), data: data,);
     if (response.statusCode == 200) {
