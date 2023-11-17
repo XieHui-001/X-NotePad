@@ -10,7 +10,6 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bean/ServiceResponse.dart';
-import '../utils/Base64Utils.dart';
 
 class LoginPage extends StatefulWidget{
 
@@ -99,7 +98,7 @@ class _LoginWidget extends State<LoginPage>{
     if (response.statusCode == 200) {
       ServiceResponse serviceResponse = ServiceResponse.fromJson(response.data);
       if(serviceResponse.code == 1011){
-        _openUserAgreement(Base64Utils.decrypt(serviceResponse.data));
+        _openUserAgreement(serviceResponse.data);
       }
     }
     else {
